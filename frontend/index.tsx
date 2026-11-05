@@ -80,7 +80,7 @@ function App() {
     <div className="intake-shell">
       <header className="site-header">
         <div className="site-nav wrap">
-          <a className="wordmark" href="/">ARTHUR<span>.</span>SOUZA<span>.</span>RODRIGUES <span>/</span> CLIENT INTAKE</a>
+          <a className="wordmark" href="https://arthur.law/">ARTHUR<span>.</span>SOUZA<span>.</span>RODRIGUES <span>/</span> CLIENT INTAKE</a>
           <nav aria-label="Site navigation" className="site-links">
             <a href="#intake">Intake</a>
             <a href="/lab">Elicitation lab</a>
