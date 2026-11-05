@@ -1,5 +1,7 @@
 # Client Intake (Val Town)
 
+[Open the demo](https://arthrod--bf6161ba-d937-11f1-a5d4-1607ee4eb77e.web.val.run/) · [Val Town project](https://www.val.town/x/arthrod/intake-demo-jandira)
+
 A guided **legal client intake** that turns a plain-language description of a
 matter into a structured intake the firm can act on — with an AI that **suggests
 answers you can accept or change**, a **conflict-check party list**, and
