@@ -4,17 +4,17 @@
 import type { IntakeRow, IntakeSummary } from "../shared/types.ts";
 
 /** GET /api/intakes → summaries, newest first (the firm list). */
-async function fetchIntakes(): Promise<IntakeSummary[]> {
-  const r = await fetch("/api/intakes");
-  if (!r.ok) throw new Error(`/api/intakes ${r.status}: ${await r.text()}`);
+async function fetchIntakes(token: string): Promise<IntakeSummary[]> {
+  const r = await fetch("/api/intakes", { headers: { Authorization: `Bearer ${token}` } });
+  if (!r.ok) throw new Error(r.status === 401 ? "Access denied (401). Check the admin token and try again." : `Unable to load intakes (${r.status}).`);
   const json = (await r.json()) as { intakes: IntakeSummary[] };
   return Array.isArray(json.intakes) ? json.intakes : [];
 }
 
 /** GET /api/intakes/:id → the full stored intake (summary + payload). */
-async function fetchIntake(id: number): Promise<IntakeRow> {
-  const r = await fetch(`/api/intakes/${id}`);
-  if (!r.ok) throw new Error(`/api/intakes/${id} ${r.status}: ${await r.text()}`);
+async function fetchIntake(id: number, token: string): Promise<IntakeRow> {
+  const r = await fetch(`/api/intakes/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+  if (!r.ok) throw new Error(r.status === 401 ? "Access denied (401). Check the admin token and try again." : `Unable to load the intake (${r.status}).`);
   const json = (await r.json()) as { intake: IntakeRow };
   return json.intake;
 }

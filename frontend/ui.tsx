@@ -6,7 +6,7 @@ import type { IntakeBrief, Stage, UrgencyFlag } from "../shared/types.ts";
 
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`bg-white border border-slate-200 shadow-sm rounded-lg p-6 sm:p-8 ${className}`}>
+    <div data-panel="true" className={`bg-white border border-slate-200 shadow-sm rounded-lg p-6 sm:p-8 ${className}`}>
       {children}
     </div>
   );
@@ -31,6 +31,7 @@ function PrimaryButton({
       onClick={onClick}
       disabled={disabled}
       data-testid={testid}
+      data-variant="primary"
       className="bg-slate-900 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded"
     >
       {children}
@@ -55,6 +56,7 @@ function GhostButton({
       onClick={onClick}
       disabled={disabled}
       data-testid={testid}
+      data-variant="secondary"
       className="border border-slate-300 hover:border-slate-500 text-slate-700 text-xs font-semibold uppercase tracking-[0.14em] px-4 py-2.5 rounded disabled:opacity-40"
     >
       {children}
@@ -78,6 +80,8 @@ function Chip({
       type="button"
       onClick={onClick}
       title={title}
+      aria-pressed={!!active}
+      data-variant="chip"
       className={"text-xs px-3 py-1.5 rounded-full border transition " +
         (active
           ? "bg-slate-900 text-white border-slate-900"
@@ -145,6 +149,7 @@ function Stepper({ stage }: { stage: Stage }) {
         return (
           <span
             key={s.label}
+            data-current={active ? "true" : "false"}
             className={"text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded border " +
               (active
                 ? "bg-slate-900 text-white border-slate-900"

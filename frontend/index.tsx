@@ -66,46 +66,44 @@ function App() {
   }
 
   const stage = session.stage;
+  const heading = stage === "start" ? "Let's start with the facts."
+    : stage === "eliciting" || stage === "elicit" ? "Review the guided questions."
+    : stage === "finalizing" || stage === "review" ? "Review your intake."
+    : stage === "saved" ? "Your intake is complete."
+    : "Return to your intake.";
 
   if (firmView) {
     return <FirmDashboard onClose={() => setFirmView(false)} />;
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-10">
-      <header className="mb-8 flex items-start justify-between gap-4">
-        <div>
-          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500 mb-1">
-            Client intake
-          </div>
-          <h1 className="text-3xl font-semibold tracking-tight">Tell us about your legal matter</h1>
-          <p className="text-slate-600 mt-2 text-sm leading-relaxed max-w-xl">
-            A few guided questions so the firm can help you quickly. We'll suggest answers you can
-            accept or change. Nothing is submitted until you review it.
-          </p>
-        </div>
-        <div className="flex items-center gap-3 shrink-0 mt-1">
-          {stage !== "start" && stage !== "saved" && (
-            <button
-              type="button"
-              data-testid="start-over"
-              onClick={onReset}
-              className="text-xs text-slate-500 hover:text-slate-900 underline"
-            >
-              Start over
-            </button>
-          )}
-          <button
-            type="button"
-            data-testid="firm-open"
-            onClick={() => setFirmView(true)}
-            className="text-xs text-slate-500 hover:text-slate-900 underline"
-          >
-            Firm view
-          </button>
+    <div className="intake-shell">
+      <header className="site-header">
+        <div className="site-nav wrap">
+          <a className="wordmark" href="/">ARTHUR<span>.</span>SOUZA<span>.</span>RODRIGUES <span>/</span> CLIENT INTAKE</a>
+          <nav aria-label="Site navigation" className="site-links">
+            <a href="#intake">Intake</a>
+            <a href="/lab">Elicitation lab</a>
+            <a href="https://github.com/jandira-tech/intake-demo">View source ↗</a>
+          </nav>
         </div>
       </header>
-
+      <section className="hero wrap">
+        <p className="eyebrow">/ Guided intake <span>·</span> Structured elicitation <span>·</span> Human review</p>
+        <h1>Tell us about your <mark>legal matter.</mark></h1>
+        <p className="hero-copy">A few guided questions help the firm understand your situation. Review the suggested answers and change anything before you submit.</p>
+        <p className="process-line"><span>Your matter</span><b>→</b><span>Guided questions</span><b>→</b><span>Review</span><b>→</b><span>Submit</span></p>
+      </section>
+      <main id="intake" className="wrap intake-main">
+        <div className="work-heading">
+          <div><span className="section-label"><i /> / Client intake</span><h2>{heading}</h2></div>
+          <div className="work-actions">
+            {stage !== "start" && stage !== "saved" && (
+              <button type="button" data-testid="start-over" onClick={onReset}>Start over</button>
+            )}
+            <button type="button" data-testid="firm-open" onClick={() => setFirmView(true)}>Firm view</button>
+          </div>
+        </div>
       {stage !== "error" && <Stepper stage={stage} />}
 
       {stage === "start" && <StartStep brief={session.brief} onStart={runElicit} />}
@@ -163,10 +161,12 @@ function App() {
         </Card>
       )}
 
-      <p className="text-[11px] text-slate-400 mt-4 leading-relaxed">
-        This tool helps gather information; it is not legal advice and does not create an
-        attorney–client relationship until the firm accepts your matter.
-      </p>
+        <p className="intake-disclaimer">
+          This tool helps gather information; it is not legal advice and does not create an
+          attorney–client relationship until the firm accepts your matter.
+        </p>
+      </main>
+      <footer className="site-footer"><div className="wrap"><span>CLIENT INTAKE / A GUIDED DEMONSTRATION</span><a href="https://github.com/jandira-tech/intake-demo">View source ↗</a></div></footer>
     </div>
   );
 }

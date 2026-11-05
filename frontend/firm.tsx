@@ -84,6 +84,18 @@ function UrgencyChip({ level }: { level: string }) {
 
 function FirmDashboard({ onClose }: { onClose: () => void }) {
   const [view, setView] = useState<View>({ kind: "list" });
+  const [mode, setMode] = useState<"loading" | "demo" | "configured" | "error">("loading");
+  const [draftToken, setDraftToken] = useState("");
+  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/mode", { signal: controller.signal })
+      .then((r) => { if (!r.ok) throw new Error("Unable to check demo mode"); return r.json(); })
+      .then((data: { demo?: boolean }) => setMode(data.demo ? "demo" : "configured"))
+      .catch(() => { if (!controller.signal.aborted) setMode("error"); });
+    return () => controller.abort();
+  }, []);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8" data-testid="firm-dashboard">
@@ -110,17 +122,31 @@ function FirmDashboard({ onClose }: { onClose: () => void }) {
         </button>
       </header>
 
-      {view.kind === "list" && <FirmList onOpen={(id) => setView({ kind: "detail", id })} />}
-      {view.kind === "detail" && (
-        <FirmDetail id={view.id} onBack={() => setView({ kind: "list" })} />
+      {mode === "loading" && <p>Checking demo mode…</p>}
+      {mode === "error" && <ErrorBox message="Unable to check the server mode. Close and reopen the firm view to retry." />}
+      {mode === "demo" && <Card><p>This is a public demo. Submissions are not stored, so there are no intakes to show.</p></Card>}
+      {mode === "configured" && !token && (
+        <Card>
+          <form onSubmit={(event) => { event.preventDefault(); setToken(draftToken.trim()); setDraftToken(""); }}>
+            <label htmlFor="firm-token" className="block text-sm font-semibold mb-2">Admin token</label>
+            <p className="text-sm text-slate-600 mb-3">Enter the token configured for this Val. It stays in this view's memory and is cleared when you close it.</p>
+            <input id="firm-token" type="password" autoComplete="off" className="w-full border border-slate-300 px-3 py-2 mb-4" value={draftToken} onChange={(event) => setDraftToken(event.target.value)} />
+            <PrimaryButton type="submit" disabled={!draftToken.trim()}>Open intakes</PrimaryButton>
+          </form>
+        </Card>
       )}
+      {mode === "configured" && token && <>
+        <div className="mb-4"><GhostButton onClick={() => { setToken(""); setView({ kind: "list" }); }}>Lock firm view</GhostButton></div>
+        {view.kind === "list" && <FirmList token={token} onOpen={(id) => setView({ kind: "detail", id })} />}
+        {view.kind === "detail" && <FirmDetail id={view.id} token={token} onBack={() => setView({ kind: "list" })} />}
+      </>}
     </div>
   );
 }
 
 // ---------- List ----------
 
-function FirmList({ onOpen }: { onOpen: (id: number) => void }) {
+function FirmList({ onOpen, token }: { onOpen: (id: number) => void; token: string }) {
   const [rows, setRows] = useState<IntakeSummary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [area, setArea] = useState("all");
@@ -130,13 +156,13 @@ function FirmList({ onOpen }: { onOpen: (id: number) => void }) {
     let live = true;
     setRows(null);
     setError(null);
-    fetchIntakes()
+    fetchIntakes(token)
       .then((r) => live && setRows(r))
       .catch((e) => live && setError(String(e?.message ?? e)));
     return () => {
       live = false;
     };
-  }, []);
+  }, [token]);
 
   // Filter first, then surface escalating intakes to the top.
   const visible = useMemo(() => {
@@ -151,7 +177,7 @@ function FirmList({ onOpen }: { onOpen: (id: number) => void }) {
     <div className="space-y-4" data-testid="firm-list">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <span className="text-xs font-semibold text-slate-600" data-testid="firm-count">
-          {visible
+          {error ? "Unable to load intakes" : visible
             ? `${visible.length} intake${visible.length === 1 ? "" : "s"}${
               escalating > 0 ? ` · ${escalating} need${escalating === 1 ? "s" : ""} attention` : ""
             }`
@@ -234,7 +260,7 @@ function FirmList({ onOpen }: { onOpen: (id: number) => void }) {
 
 // ---------- Detail (read-only) ----------
 
-function FirmDetail({ id, onBack }: { id: number; onBack: () => void }) {
+function FirmDetail({ id, onBack, token }: { id: number; onBack: () => void; token: string }) {
   const [row, setRow] = useState<IntakeRow | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -242,13 +268,13 @@ function FirmDetail({ id, onBack }: { id: number; onBack: () => void }) {
     let live = true;
     setRow(null);
     setError(null);
-    fetchIntake(id)
+    fetchIntake(id, token)
       .then((r) => live && setRow(r))
       .catch((e) => live && setError(String(e?.message ?? e)));
     return () => {
       live = false;
     };
-  }, [id]);
+  }, [id, token]);
 
   if (error) {
     return (

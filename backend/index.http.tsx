@@ -1,4 +1,5 @@
 import { Hono } from "npm:hono@4.13.12";
+import { labApi } from "./lab.ts";
 import { readFile, serveFile } from "https://esm.town/v/std/utils/index.ts";
 import { elicitIntake, explain, finalizeIntake } from "./llm.ts";
 import { readJsonBody } from "./http_util.ts";
@@ -42,6 +43,12 @@ function isSafeAssetPath(p: string): boolean {
   }
   return !decoded.includes("..") && !p.includes("..");
 }
+
+// ---------- Elicitation lab ----------
+app.route("/api/lab", labApi);
+app.get("/lab", async (c) => c.html(await readFile("/lab/index.html", import.meta.url)));
+app.get("/lab/*", (c) =>
+  isSafeAssetPath(c.req.path) ? serveFile(c.req.path, import.meta.url) : c.text("Forbidden", 403));
 
 // ---------- Static frontend ----------
 app.get("/frontend/*", (c) =>

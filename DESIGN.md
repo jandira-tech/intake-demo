@@ -1,25 +1,24 @@
 # Design tokens
 
-Extracted from `frontend/index.html` and the Twind utility classes used throughout
-`frontend/*.tsx`. These describe the existing interface; they are not a new theme.
-Twind's standard utility palette supplies the named colors, so its CDN version is
-part of the visual dependency.
+The interface adopts the design language in the ZIP's `Elicitation Lab - Demo.html`,
+`colors_and_type.css`, and `demos/shared.css`. The intake and lab share a visual
+language while preserving their separate workflows.
 
-| Role | Existing value or utility |
+| Token | Value / use |
 | --- | --- |
-| Page background | `linear-gradient(180deg, #f7f4ef 0%, #eef2f7 100%)` |
-| Primary text / actions | `slate-900`; action text `white` |
-| Secondary text | `slate-700`, `slate-600`, `slate-500`; muted `slate-400` |
-| Surfaces and borders | `white`, `slate-50`; `slate-200`, `slate-300` |
-| Warnings | `amber-50`, `amber-300`, `amber-900` |
-| Errors / urgent cues | `rose-50`, `rose-300`, `rose-800`, `rose-900` |
-| Informational cues | `sky-50`, `sky-900` |
-| Typeface | `ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif`; monospace for references |
-| Type scale | Twind `text-xs`, `text-sm`, `text-xl`, `text-3xl`, plus `10px` and `11px` labels |
-| Weight | `font-medium`, `font-semibold` |
-| Spacing | Twind spacing scale, especially `gap-2`, `gap-3`, `px-3`, `px-4`, `py-2`, `p-4` |
-| Shape | `rounded-lg` for controls/cards, `rounded-full` for badges |
-| Layout | centered `max-w-3xl`, responsive `sm:` grids |
+| Paper | `#FAFAF8` page background |
+| Ink | `#0A0A0A` text, primary action, structural borders |
+| Surface | `#FFFFFF` form panels |
+| Muted | `#6B6B6B` secondary text |
+| Faint | `#E8E8E5` dividers |
+| Mark | `#FFD400` highlights, hover accents, focus offset |
+| Body / display | Libre Franklin, with a system sans fallback |
+| Labels / navigation | Roboto Mono, with a system monospace fallback |
+| Borders and shape | 1px ink or faint border; square corners |
+| Layout | 1180px maximum page width; 760px maximum form width |
+| Gutters | `clamp(20px, 5vw, 56px)` |
+| Headline | `clamp(30px, 4.4vw, 50px)` and tight tracking |
 
-The utilities are the source of truth for individual components. Do not assume all
-palette values are hard-coded hex colors: they are supplied by Twind at runtime.
+Canonical fonts load from Google Fonts with local system fallbacks; Val Town serves
+text-only project assets. The real intake form, model requests, review, and
+submission behavior are independent of the presentational design.

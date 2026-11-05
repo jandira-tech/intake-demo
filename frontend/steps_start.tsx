@@ -67,6 +67,7 @@ function StartStep({
             key={p.id}
             type="button"
             data-testid={`persona-${p.id}`}
+            aria-pressed={persona === p.id}
             onClick={() => setPersona(p.id)}
             className={"text-left rounded-lg border px-4 py-3 transition " +
               (persona === p.id
@@ -90,6 +91,7 @@ function StartStep({
             key={m.id}
             type="button"
             data-testid={`area-${m.id}`}
+            aria-pressed={area === m.id}
             onClick={() => setArea(m.id)}
             title={m.blurb}
             className={"rounded-full border px-3 py-1.5 text-sm transition " +

@@ -90,10 +90,10 @@ hosted environment.
 | `ADMIN_TOKEN` unset or blank | Demo mode: validated submissions return a `DEMO-` reference and are **not stored**; read endpoints return 503. |
 | `ADMIN_TOKEN` set | Submissions are stored in the val-scoped `intakes_v1` table. Read endpoints require `Authorization: Bearer <ADMIN_TOKEN>` and return 401 for a wrong token. Set it in the val's environment settings; never commit it. |
 
-The read-only firm dashboard issues requests without a bearer token, so it cannot
-read protected records in this version. Access records through an authenticated
-API client if storage is enabled. In demo mode, the dashboard cannot show saved
-submissions. Rate limiting is in-memory per running isolate, not a distributed
+The read-only firm dashboard prompts for the configured admin token when storage
+is enabled; it sends the bearer token on read requests and keeps it only in memory
+until the view is locked or closed. When the token is unset, the dashboard explains
+that demo submissions are not stored. Rate limiting is in-memory per running isolate, not a distributed
 security boundary. Drafts are stored in the browser's `localStorage`; resetting
 the flow clears its draft. Submitting the discard-narrative option removes the
 narrative from the database payload, but generated summaries and answers may
@@ -137,3 +137,20 @@ start → elicit → review → finalize → save flow with fictional data; chec
 network and Val Town logs if a model call fails. A 429 means the shared model
 quota or in-memory limiter was reached; wait and retry. A 503 on read routes
 means `ADMIN_TOKEN` is unset; 401 means the bearer token is missing or wrong.
+
+## Elicitation Lab
+
+The navigation links to `/lab`, an interactive companion based on the ZIP's
+Elicitation Lab design. Choose a request from the queue, fill the form, and send
+an accept, decline, or cancel response. The server validates the response against
+its plan; responses are not stored. The lab's context editor and notes remain
+local to the browser and are not sent to the model or server.
+
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /api/lab/plans` | Return the available elicitation plans and schemas. |
+| `POST /api/lab/plans/:id/respond` | Validate a response to a selected plan. |
+| `POST /api/lab/rpc` | Validate a synthetic `elicitation/create` request and report that interactive transport is unavailable. |
+
+The RPC endpoint returns JSON-RPC error 501 for a valid request because an interactive
+MCP transport is unavailable; it does not pretend to return a human response. Use the queue's response controls for the interactive demonstration.
