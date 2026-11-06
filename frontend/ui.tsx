@@ -190,8 +190,8 @@ function HelpInline({
     setAns(null);
     try {
       setAns(await callHelp(brief, q.trim()));
-    } catch (e: any) {
-      setAns(String(e?.message ?? e));
+    } catch (e: unknown) {
+      setAns((e instanceof Error ? e.message : String(e)));
     } finally {
       setBusy(false);
     }
@@ -217,8 +217,8 @@ function HelpInline({
                 className="flex-1 border border-slate-300 rounded px-3 py-2 text-sm"
                 placeholder='e.g. "What is a conflict check?"'
                 value={q}
-                onChange={(e: any) => setQ(e.target.value)}
-                onKeyDown={(e: any) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQ(e.target.value)}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
                     void ask();

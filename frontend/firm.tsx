@@ -158,7 +158,7 @@ function FirmList({ onOpen, token }: { onOpen: (id: number) => void; token: stri
     setError(null);
     fetchIntakes(token)
       .then((r) => live && setRows(r))
-      .catch((e) => live && setError(String(e?.message ?? e)));
+      .catch((e) => live && setError((e instanceof Error ? e.message : String(e))));
     return () => {
       live = false;
     };
@@ -188,7 +188,7 @@ function FirmList({ onOpen, token }: { onOpen: (id: number) => void; token: stri
             aria-label="Filter by matter area"
             data-testid="firm-filter-area"
             value={area}
-            onChange={(e: any) => setArea(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setArea(e.target.value)}
             className="text-xs border border-slate-300 rounded px-2 py-1.5 bg-white text-slate-700"
           >
             <option value="all">All matters</option>
@@ -198,7 +198,7 @@ function FirmList({ onOpen, token }: { onOpen: (id: number) => void; token: stri
             aria-label="Filter by urgency"
             data-testid="firm-filter-urgency"
             value={urgency}
-            onChange={(e: any) => setUrgency(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setUrgency(e.target.value)}
             className="text-xs border border-slate-300 rounded px-2 py-1.5 bg-white text-slate-700"
           >
             <option value="all">All urgency</option>
@@ -270,7 +270,7 @@ function FirmDetail({ id, onBack, token }: { id: number; onBack: () => void; tok
     setError(null);
     fetchIntake(id, token)
       .then((r) => live && setRow(r))
-      .catch((e) => live && setError(String(e?.message ?? e)));
+      .catch((e) => live && setError((e instanceof Error ? e.message : String(e))));
     return () => {
       live = false;
     };

@@ -115,7 +115,7 @@ function StartStep({
           className="w-full border border-slate-300 rounded px-3 py-2 text-sm"
           placeholder={client ? "e.g. Dana Rivera" : "Name to open the file under"}
           value={name}
-          onChange={(e: any) => setName(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
         />
       </div>
 
@@ -137,7 +137,7 @@ function StartStep({
             ? "e.g. I was rear-ended at a red light last week and my neck still hurts. The other driver's insurer keeps calling…"
             : "e.g. Rear-end MVA, client injured, adverse carrier making early contact…"}
           value={narrative}
-          onChange={(e: any) => setNarrative(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setNarrative(e.target.value)}
         />
         <div className="text-[11px] text-slate-400 mt-1">
           {narrative.trim().length}/{MIN_NARRATIVE_CHARS} characters minimum

@@ -49,8 +49,8 @@ function App() {
       const answers: Record<string, string> = {};
       for (const f of elicitation.fields) answers[f.id] = f.recommended || "";
       update({ stage: "elicit", elicitation, answers });
-    } catch (e: any) {
-      update({ stage: "error", error_message: String(e?.message ?? e) });
+    } catch (e: unknown) {
+      update({ stage: "error", error_message: (e instanceof Error ? e.message : String(e)) });
     }
   }
 
@@ -60,8 +60,8 @@ function App() {
     try {
       const finalize = await callFinalize(session.brief, answers);
       update({ stage: "review", finalize });
-    } catch (e: any) {
-      update({ stage: "error", error_message: String(e?.message ?? e) });
+    } catch (e: unknown) {
+      update({ stage: "error", error_message: (e instanceof Error ? e.message : String(e)) });
     }
   }
 

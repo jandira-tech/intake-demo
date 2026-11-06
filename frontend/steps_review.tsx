@@ -80,8 +80,8 @@ function ReviewStep({
     try {
       const res = await callSubmit(buildRecord(session));
       onSaved(res);
-    } catch (e: any) {
-      setError(String(e?.message ?? e));
+    } catch (e: unknown) {
+      setError((e instanceof Error ? e.message : String(e)));
       setAskingSure(false);
     } finally {
       setBusy(false);
@@ -186,7 +186,7 @@ function ReviewStep({
             type="checkbox"
             data-testid="discard-narrative-toggle"
             checked={session.discard_narrative}
-            onChange={(e: any) => onChange({ discard_narrative: e.target.checked })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange({ discard_narrative: e.target.checked })}
             aria-label="Save my intake but discard the free-text description"
             className="mt-0.5 h-4 w-4 accent-slate-900"
           />

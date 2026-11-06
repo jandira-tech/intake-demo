@@ -117,7 +117,7 @@ function ElicitStep({
                   className="w-full border border-slate-300 focus:border-slate-500 rounded px-3 py-2 text-sm min-h-[72px]"
                   placeholder="Pick a suggestion above or write your own…"
                   value={value}
-                  onChange={(e: any) => setAnswer(f.id, e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setAnswer(f.id, e.target.value)}
                 />
               ) : (
                 <input
@@ -126,7 +126,7 @@ function ElicitStep({
                   className="w-full border border-slate-300 focus:border-slate-500 rounded px-3 py-2 text-sm"
                   placeholder="Pick a suggestion above or write your own…"
                   value={value}
-                  onChange={(e: any) => setAnswer(f.id, e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAnswer(f.id, e.target.value)}
                 />
               )}
 
